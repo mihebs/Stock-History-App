@@ -20,3 +20,5 @@ fig = go.Figure()
 fig.add_trace(go.Scatter(x = data.index, y = data['Close'], name = 'Fechamento'))
 fig.update_layout(title = f"{ticker_symbol}", xaxis_title = 'Data', yaxis_title = 'Preço')
 st.plotly_chart(fig)
+
+# URL https://stockapp.streamlit.app/
