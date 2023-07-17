@@ -4,6 +4,8 @@ import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
 import plotly.express as px
+import numpy as np
+import statsmodels.tsa.api as smt
 
 # título do app
 st.title('Stock History App')
@@ -45,5 +47,41 @@ fig_volume.update_layout(
     yaxis_title='Volume'
 )
 st.plotly_chart(fig_volume)
+
+st.sidebar.title('Selecione o stock - Gráfico 2')
+ticker_symbol2 = st.sidebar.text_input('Ação', 'MSFT', max_chars=10)
+
+# baixando dados do yahoo
+data2 = yf.download(ticker_symbol2, start='2020-01-01', end='2023-06-26')
+
+# exibir os dados
+st.subheader('Histórico')
+st.dataframe(data2)
+
+# exibir o gráfico de fechamento - gráfico 2
+fig_close2 = go.Figure()
+fig_close2.add_trace(go.Scatter(x=data2.index, y=data2['Close'], name='Fechamento'))
+fig_close2.update_layout(title=f"{ticker_symbol2}", xaxis_title='Data', yaxis_title='Preço')
+st.plotly_chart(fig_close2)
+
+# gráfico de barras para o volume de negociação - gráfico 2
+fig_volume2 = go.Figure()
+fig_volume2.add_trace(go.Bar(x=data2.index, y=data2['Volume'], name='Volume de Negociação - Gráfico 2'))
+fig_volume2.update_layout(title=f"{ticker_symbol2} - Volume de Negociação - Gráfico 2", xaxis_title='Data', yaxis_title='Volume')
+st.plotly_chart(fig_volume2)
+
+# calcular irf
+returns2 = np.log(data2['Close']).diff().dropna()
+model2 = sm.tsa.VAR(returns2)
+results2 = model2.fit(maxlags=10, ic='aic')
+irf2 = results2.irf(10)
+
+# gráfico do irf
+fig_irf2 = go.Figure()
+for i in range(len(returns2.columns)):
+    fig_irf2.add_trace(go.Scatter(x=irf2.irfperiods, y=irf2.irfs[:, i, i], name=returns2.columns[i]))
+
+fig_irf2.update_layout(title='Função de Resposta ao Impulso - Gráfico 2', xaxis_title='Período', yaxis_title='IRF')
+st.plotly_chart(fig_irf2)
 
 # https://stockhistory.streamlit.app/
