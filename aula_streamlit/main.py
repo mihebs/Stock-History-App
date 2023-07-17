@@ -5,7 +5,6 @@ import yfinance as yf
 import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
-import statsmodels.tsa.api as smt
 
 # título do app
 st.title('Stock History App')
