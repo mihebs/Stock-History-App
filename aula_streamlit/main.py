@@ -4,7 +4,6 @@ import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
 import plotly.express as px
-import numpy as np
 
 # título do app
 st.title('Stock History App')
