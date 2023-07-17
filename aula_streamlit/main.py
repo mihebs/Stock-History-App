@@ -45,3 +45,5 @@ fig_volume.update_layout(
     yaxis_title='Volume'
 )
 st.plotly_chart(fig_volume)
+
+# https://stockhistory.streamlit.app/
